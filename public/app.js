@@ -11,7 +11,7 @@ function readFile(path, cb){
 	});
 }
 function isAuthorized (req) {
-	return true;
+	return false;
 }
 
 
@@ -21,7 +21,7 @@ function sendFile(path, req, res){
 			res.send(err || html);
 		});
 	} else{
-		readFile('index.html', function (err, cb) {
+		readFile('index.html', function (err, html) {
 			res.send(err || html);
 		});
 	}
