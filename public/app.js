@@ -1,9 +1,16 @@
 var express = require('express');
-var bodyparser= require('body-parser')
+var bodyparser= require('body-parser');
+var cookieparser= require('cookie-parser');
+
+
 var fs = require('fs');
 var app = express();
 
 app.use(bodyparser());
+app.use(cookieparser());
+
+var sessions = {};
+
 function readFile(path, cb){
 	fs.readFile(path, function(err,buff) {
 		if (err) cb(err);
@@ -11,7 +18,7 @@ function readFile(path, cb){
 	});
 }
 function isAuthorized (req) {
-	return false;
+	return !!sessions[req.cookies.auth];
 }
 
 
@@ -34,7 +41,22 @@ app.get ('/', function(req, res){
 });
 
 app.post('/signup', function(req, res){
-	res.send('login: '+req.body.login+' password: '+req.body.pass);
+	//res.send('login: '+req.body.login+' password: '+req.body.pass);
+	var login = req.body.login;
+	var pass = req.body.pass;
+	var status = 401;
+
+	if (login == 'admin' && pass == 'admin'){
+		var sessionId = Math.random() * 999999;
+		sessions[sessionId] = {
+			login: 'admin'
+		};
+
+		res.cookie('auth', sessionId, {
+			httpOnly: true
+		});
+	}
+		res.redirect( '/');
 });
 
 app.listen(3000,function(){
