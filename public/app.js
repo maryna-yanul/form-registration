@@ -40,6 +40,14 @@ app.get ('/', function(req, res){
 	sendFile('new.html', req, res);
 });
 
+
+
+
+
+
+
+
+
 app.post('/signup', function(req, res){
 	//res.send('login: '+req.body.login+' password: '+req.body.pass);
 	var login = req.body.login;
@@ -58,6 +66,13 @@ app.post('/signup', function(req, res){
 	}
 		res.redirect( '/');
 });
+
+app.get('/logout', function(req, res) {
+	var sessionId = req.cookies.auth;
+	sessions[sessionId] = null;
+	res.clearCookie('auth');
+	res.redirect('/');
+})
 
 app.listen(3000,function(){
 });
